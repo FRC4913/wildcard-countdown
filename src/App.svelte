@@ -254,7 +254,7 @@
                     <div class="timeline-middle size-12">
                         <p
                             class={"text-lg size-12 bg-accent/40 text-center content-center rounded-full" +
-                                (currentMeeting?.startDate == event.startDate
+                                (currentMeeting?.startDate == startDate
                                     ? " animate-bounce"
                                     : "")}
                         >
