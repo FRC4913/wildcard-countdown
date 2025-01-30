@@ -1,0 +1,5 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+    themes: forest;
+}
+@custom-variant dark (&:where(.dark, .dark *));
