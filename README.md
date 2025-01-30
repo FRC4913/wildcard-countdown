@@ -80,7 +80,7 @@ Project Link: [https://github.com/FRC4913/wildcard-countdown](https://github.com
 [issues-shield]: https://img.shields.io/github/issues/FRC4913/wildcard-countdown.svg?style=for-the-badge
 [issues-url]: https://github.com/FRC4913/wildcard-countdown/issues
 [license-shield]: https://img.shields.io/github/license/FRC4913/wildcard-countdown.svg?style=for-the-badge
-[license-url]: https://github.com/FRC4913/wildcard-countdown/blob/master/LICENSE.txt
+[license-url]: https://github.com/FRC4913/wildcard-countdown/blob/master/LICENSE
 [product-screenshot]: images/screenshot.jpeg
 [Svelte.dev]: https://img.shields.io/badge/Svelte-4A4A55?style=for-the-badge&logo=svelte&logoColor=FF3E00
 [Svelte-url]: https://svelte.dev/
