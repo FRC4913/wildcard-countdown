@@ -40,7 +40,7 @@
 
     const secondsLeft = $derived(
         ICAL.Time.fromDateTimeString("2025-02-23T08:00:00")
-            .subtractDate(now)
+            .subtractDateTz(now)
             .toSeconds()
     );
 
@@ -85,7 +85,7 @@
                     return meeting.event.duration.toSeconds();
                 }
                 if (meeting.endDate.compare(now) == 1) {
-                    return meeting.endDate.subtractDate(now).toSeconds();
+                    return meeting.endDate.subtractDateTz(now).toSeconds();
                 }
                 return 0;
             })
@@ -223,9 +223,7 @@
                 <progress
                     class="w-full progress progress-accent h-3"
                     value={currentMeeting.event.duration.toSeconds() -
-                        currentMeeting.event.endDate
-                            .subtractDate(now)
-                            .toSeconds()}
+                        currentMeeting.endDate.subtractDateTz(now).toSeconds()}
                     max={currentMeeting.event.duration.toSeconds()}
                 ></progress>
             </div>
