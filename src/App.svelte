@@ -119,8 +119,8 @@
         };
     });
 
-    let showingMeetingMinutes = $state(false);
-    let showingMilliseconds = $state(true);
+    let showingMeetingMinutes = $state(currentMeeting != null);
+    let showingMilliseconds = $state(false);
 </script>
 
 <header
