@@ -3,3 +3,7 @@
     themes: forest;
 }
 @custom-variant dark (&:where(.dark, .dark *));
+
+.min-h-main {
+    height: calc(100vh - (var(--spacing) * 15));
+}

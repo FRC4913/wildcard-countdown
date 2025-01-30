@@ -4,6 +4,7 @@
     import ICAL from "ical.js";
     import Countdown from "./lib/Countdown.svelte";
     import Milliseconds from "./lib/Milliseconds.svelte";
+    import { scale } from "svelte/transition";
 
     const jcalData = ICAL.parse(calendar);
     const vcalendar = new ICAL.Component(jcalData);
@@ -93,17 +94,18 @@
 
     onMount(() => {
         const x = document
-            .getElementById(nextMeeting?.startDate.toString())
+            .getElementById(nextMeeting?.startDate.toString() ?? "")
             ?.getBoundingClientRect().left;
         console.log(nextMeeting?.startDate.toJSDate().toLocaleDateString());
         console.log(nextMeeting?.event.uid);
         if (x) {
             const meetingTimeline = document.getElementById("meetingTimeline")!;
             console.log(document.getElementById(nextMeeting?.event.uid ?? ""));
-            meetingTimeline.scrollTo(
-                x - meetingTimeline.getBoundingClientRect().left - 20,
-                0
-            );
+            meetingTimeline.scrollTo({
+                left: x - meetingTimeline.getBoundingClientRect().left - 20,
+                top: 0,
+                behavior: "smooth",
+            });
         }
 
         const interval = setInterval(() => {
@@ -122,7 +124,7 @@
 </script>
 
 <header
-    class="fixed top-0 h-15 flex flex-row place-items-center place-content-between w-screen py-3 px-5 bg-primary/10 backdrop-blur-md z-50"
+    class="fixed top-0 min-h-15 flex flex-row place-items-center place-content-between w-screen py-3 px-5 bg-primary/10 backdrop-blur-md z-50 flex-wrap"
 >
     <div class="flex flex-row gap-3">
         <button class="btn btn-square btn-secondary size-10">+</button>
@@ -154,9 +156,9 @@
     </div>
 </header>
 
-<main class="min-w-screen p-5">
+<main class="min-w-screen px-5 mt-15">
     <div
-        class="h-screen flex flex-col place-content-center gap-10 place-items-center"
+        class="min-h-main flex flex-col place-content-center gap-10 place-items-center"
     >
         {#if showingMeetingMinutes}
             <h1 class="text-4xl font-bold text-center text-neutral-content">
@@ -207,11 +209,12 @@
         {/if}
         {#if currentMeeting}
             <div
+                transition:scale
                 class="flex flex-col gap-5 place-self-stretch mx-32 p-5 bg-accent/20 text-neutral-content rounded-2xl"
             >
                 <div class="text-center w-max-[50%]">
                     <h2 class="text-2xl font-bold">
-                        Current meeting: {currentMeeting.event.summary}
+                        {currentMeeting.event.summary}
                     </h2>
                     <p class="text-lg">
                         {currentMeeting.event.description}
@@ -239,9 +242,10 @@
                 >
                     {#if i != 0}
                         <hr
-                            class={startDate.compare(now) == 1
-                                ? ""
-                                : "bg-accent"}
+                            class={"transition-colors rounded-r-full" +
+                                (startDate.compare(now) == 1
+                                    ? ""
+                                    : " bg-accent")}
                         />
                     {/if}
                     <div
@@ -249,25 +253,24 @@
                     >
                         {event.summary}
                     </div>
-                    <div class="timeline-middle relative flex size-12">
-                        {#if currentMeeting?.startDate == startDate}
-                            <div
-                                class="w-12 h-12 bg-accent/40 rounded-full animate-ping absolute inline-flex"
-                            ></div>
-                        {/if}
+                    <div class="timeline-middle size-12">
                         <p
-                            class="text-lg size-12 bg-accent/40 text-center content-center rounded-full relative"
+                            class={"text-lg size-12 bg-accent/40 text-center content-center rounded-full" +
+                                (currentMeeting?.startDate == event.startDate
+                                    ? " animate-bounce"
+                                    : "")}
                         >
                             {startDate.month}/{startDate.day}
                         </p>
                     </div>
-                    {#if i != meetings.length - 1}
-                        <hr
-                            class={endDate.compare(now) == 1 ? "" : "bg-accent"}
-                        />
-                    {:else}
-                        <hr class="bg-amber-300" />
-                    {/if}
+                    <hr
+                        class={"transition-colors rounded-l-full" +
+                            (i != meetings.length - 1
+                                ? endDate.compare(now) == 1
+                                    ? ""
+                                    : " bg-accent"
+                                : "bg-amber-300")}
+                    />
                 </li>
             {/each}
             <li class="-mb-20">
