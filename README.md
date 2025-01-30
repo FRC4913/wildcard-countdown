@@ -1,47 +1,86 @@
-# Svelte + TS + Vite
+<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
 
-This template should help get you started developing with Svelte and TypeScript in Vite.
+<a id="readme-top"></a>
 
-## Recommended IDE Setup
+[![Contributors][contributors-shield]][contributors-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![project_license][license-shield]][license-url]
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
+<br />
+<div align="center">
 
-## Need an official Svelte framework?
+<h3 align="center">Huskyteers Wildcard Countdown</h3>
 
-Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
+  <p align="center">
+    Understanding that we have very little time until our Wildcard competition, we have decided to maximize the time we have been given to try to make the most of our second chance, and have created this countdown for a little added pressure, but also as a way to see future meetings, meeting time, and calendars.
+    <br />
+    <br />
+    <a href="https://github.com/FRC4913/wildcard-countdown">View Demo</a>
+    &middot;
+  </p>
+</div>
 
-## Technical considerations
+<!-- ABOUT THE PROJECT -->
 
-**Why use this over SvelteKit?**
+## About The Project
 
-- It brings its own routing solution which might not be preferable for some users.
-- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
+[![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-This template contains as little as possible to get started with Vite + TypeScript + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
+### Built With
 
-**Why `global.d.ts` instead of `compilerOptions.types` inside `jsconfig.json` or `tsconfig.json`?**
+-   [![Svelte][Svelte.dev]][Svelte-url]
 
-Setting `compilerOptions.types` shuts out all other types not explicitly listed in the configuration. Using triple-slash references keeps the default TypeScript setting of accepting type information from the entire workspace, while also adding `svelte` and `vite/client` type information.
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-**Why include `.vscode/extensions.json`?**
+<!-- GETTING STARTED -->
 
-Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
+## Getting Started
 
-**Why enable `allowJs` in the TS template?**
+1. Clone the repo
+    ```sh
+    git clone https://github.com/FRC4913/wildcard-countdown.git
+    ```
+2. Install NPM packages
+    ```sh
+    bun install
+    ```
+3. Run dev server
+    ```sh
+    bun run dev
+    ```
 
-While `allowJs: false` would indeed prevent the use of `.js` files in the project, it does not prevent the use of JavaScript syntax in `.svelte` files. In addition, it would force `checkJs: false`, bringing the worst of both worlds: not being able to guarantee the entire codebase is TypeScript, and also having worse typechecking for the existing JavaScript. In addition, there are valid use cases in which a mixed codebase may be relevant.
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-**Why is HMR not preserving my local component state?**
+## License
 
-HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/rixo/svelte-hmr#svelte-hmr).
+Distributed under the project_license. See `LICENSE.txt` for more information.
 
-If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-```ts
-// store.ts
-// An extremely simple external store
-import { writable } from 'svelte/store'
-export default writable(0)
-```
+<!-- CONTACT -->
+
+## Contact
+
+Huskyteers 19516 - [@twitter_handle](https://www.instagram.com/ftc19516/) - fpahuskyteers19516@gmail.com
+
+Project Link: [https://github.com/FRC4913/wildcard-countdown](https://github.com/FRC4913/wildcard-countdown)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
+[contributors-shield]: https://img.shields.io/github/contributors/FRC4913/wildcard-countdown.svg?style=for-the-badge
+[contributors-url]: https://github.com/FRC4913/wildcard-countdown/graphs/contributors
+[stars-shield]: https://img.shields.io/github/stars/FRC4913/wildcard-countdown.svg?style=for-the-badge
+[stars-url]: https://github.com/FRC4913/wildcard-countdown/stargazers
+[issues-shield]: https://img.shields.io/github/issues/FRC4913/wildcard-countdown.svg?style=for-the-badge
+[issues-url]: https://github.com/FRC4913/wildcard-countdown/issues
+[license-shield]: https://img.shields.io/github/license/FRC4913/wildcard-countdown.svg?style=for-the-badge
+[license-url]: https://github.com/FRC4913/wildcard-countdown/blob/master/LICENSE.txt
+[product-screenshot]: images/screenshot.jpeg
+[Svelte.dev]: https://img.shields.io/badge/Svelte-4A4A55?style=for-the-badge&logo=svelte&logoColor=FF3E00
+[Svelte-url]: https://svelte.dev/
