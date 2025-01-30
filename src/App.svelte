@@ -8,7 +8,7 @@
     const jcalData = ICAL.parse(calendar);
     const vcalendar = new ICAL.Component(jcalData);
 
-    const events = vcalendar
+    const meetings = vcalendar
         .getAllSubcomponents("vevent")
         .map((vevent) => new ICAL.Event(vevent))
         .flatMap((event) => {
@@ -18,61 +18,74 @@
                 const events = [];
 
                 while ((next = iterator.next())) {
-                    events.push({ time: next, duration: event.duration });
+                    const occurence = event.getOccurrenceDetails(next);
+                    events.push({
+                        startDate: occurence.startDate,
+                        endDate: occurence.endDate,
+                        event,
+                    });
                 }
                 return events;
             }
-            return [{ time: event.startDate, duration: event.duration }];
+            return {
+                startDate: event.startDate,
+                endDate: event.endDate,
+                event,
+            };
         });
 
     let now = $state(ICAL.Time.fromJSDate(new Date(), true));
 
     const secondsLeft = $derived(
-        ICAL.Time.fromDateTimeString("2025-02-23T00:00:00")
+        ICAL.Time.fromDateTimeString("2025-02-23T08:00:00")
             .subtractDate(now)
             .toSeconds()
     );
 
-    const currentEvent = $derived(
-        events.find((event) => {
-            if (event.time.compare(now) == 1 || event.time.compare(now) == 0) {
+    const currentMeeting = $derived(
+        meetings.find((meeting) => {
+            if (
+                meeting.startDate.compare(now) == 1 ||
+                meeting.startDate.compare(now) == 0
+            ) {
                 return false;
             }
 
-            const endTime = event.time
-                .clone()
-                .adjust(
-                    event.duration.days,
-                    event.duration.hours,
-                    event.duration.minutes,
-                    event.duration.seconds
-                );
-            if (endTime.compare(now) == 1 || endTime.compare(now) == 0) {
+            if (
+                meeting.endDate.compare(now) == 1 ||
+                meeting.endDate.compare(now) == 0
+            ) {
                 return true;
             }
             return false;
         })
     );
 
-    const meetingSecondsLeft = $derived(
-        events
-            .map((event) => {
+    const nextMeeting = $derived(
+        meetings
+            .toSorted((a, b) => a.startDate.compare(b.startDate))
+            .find((meeting) => {
                 if (
-                    event.time.compare(now) == 1 ||
-                    event.time.compare(now) == 0
+                    meeting.endDate.compare(now) == 1 ||
+                    meeting.endDate.compare(now) == 0
                 ) {
-                    return event.duration.toSeconds();
+                    return true;
                 }
-                const endTime = event.time
-                    .clone()
-                    .adjust(
-                        event.duration.days,
-                        event.duration.hours,
-                        event.duration.minutes,
-                        event.duration.seconds
-                    );
-                if (endTime.compare(now) == 1) {
-                    return endTime.subtractDate(now).toSeconds();
+                return false;
+            })
+    );
+
+    const meetingSecondsLeft = $derived(
+        meetings
+            .map((meeting) => {
+                if (
+                    meeting.startDate.compare(now) == 1 ||
+                    meeting.startDate.compare(now) == 0
+                ) {
+                    return meeting.event.duration.toSeconds();
+                }
+                if (meeting.endDate.compare(now) == 1) {
+                    return meeting.endDate.subtractDate(now).toSeconds();
                 }
                 return 0;
             })
@@ -80,15 +93,31 @@
     );
 
     onMount(() => {
-        const interval = setInterval(() => {
-            now = ICAL.Time.fromJSDate(new Date(), true);
-        }, 1000);
+        const x = document
+            .getElementById(nextMeeting?.event.uid ?? "")
+            ?.getBoundingClientRect().left;
+        console.log(nextMeeting?.event.uid);
+        if (x) {
+            const meetingTimeline = document.getElementById("meetingTimeline")!;
+            meetingTimeline.scrollTo(
+                x - meetingTimeline.getBoundingClientRect().left - 20,
+                0
+            );
+        }
 
-        return () => clearInterval(interval);
+        const interval = setInterval(() => {
+            const date = new Date();
+            // date.setSeconds(date.getSeconds() + 0.6);
+            now = ICAL.Time.fromJSDate(date, true);
+        }, 1000 / 60);
+
+        return () => {
+            clearInterval(interval);
+        };
     });
 
-    let showingMeetingMinutes = $state(true);
-    let showingMilliseconds = $state(false);
+    let showingMeetingMinutes = $state(false);
+    let showingMilliseconds = $state(true);
 </script>
 
 <header
@@ -124,13 +153,13 @@
     </div>
 </header>
 
-<main class="container mx-auto p-5">
+<main class="min-w-screen p-5">
     <div
         class="h-screen flex flex-col place-content-center gap-10 place-items-center"
     >
         {#if showingMeetingMinutes}
             <h1 class="text-4xl font-bold text-center text-neutral-content">
-                Meeting time until WILDCARD!
+                Meeting time until <span class="text-amber-300">WILDCARD</span>!
             </h1>
             <div class="grid auto-cols-max grid-flow-col gap-5 text-center">
                 <Countdown
@@ -146,12 +175,12 @@
                     caption="seconds"
                 />
                 {#if showingMilliseconds}
-                    <Milliseconds running={currentEvent != undefined} />
+                    <Milliseconds running={currentMeeting != undefined} />
                 {/if}
             </div>
         {:else}
             <h1 class="text-4xl font-bold text-center text-neutral-content">
-                Time until WILDCARD!
+                Time until <span class="text-amber-300">WILDCARD</span>!
             </h1>
             <div class="grid auto-cols-max grid-flow-col gap-5 text-center">
                 <Countdown
@@ -175,6 +204,55 @@
                 {/if}
             </div>
         {/if}
+        {#if currentMeeting}
+            <div
+                class="flex flex-col gap-5 place-self-stretch mx-32 p-5 bg-accent/20 text-neutral-content rounded-2xl"
+            >
+                <div class="text-center w-max-[50%]">
+                    <h2 class="text-2xl font-bold">
+                        Current meeting: {currentMeeting.event.summary}
+                    </h2>
+                    <p class="text-lg">
+                        {currentMeeting.event.description}
+                    </p>
+                </div>
+                <progress
+                    class="w-full progress progress-accent h-3"
+                    value={currentMeeting.event.duration.toSeconds() -
+                        currentMeeting.event.endDate
+                            .subtractDate(now)
+                            .toSeconds()}
+                    max={currentMeeting.event.duration.toSeconds()}
+                ></progress>
+            </div>
+        {/if}
+        <ul
+            class="timeline place-self-stretch mx-10 overflow-x-scroll p-5 bg-accent/20 text-neutral-content fill-neutral-content rounded-2xl overflow-y-clip"
+            id="meetingTimeline"
+        >
+            {#each meetings.toSorted( (a, b) => a.startDate.compare(b.startDate) ) as { startDate, endDate, event }, i}
+                <li id={event.uid} class="-mb-20">
+                    {#if i != 0}
+                        <hr class="bg-accent" />
+                    {/if}
+                    <div
+                        class={"timeline-box timeline-start bg-accent/30 border-accent/40 max-w-32 text-center"}
+                    >
+                        {event.summary}
+                    </div>
+                    <div class="timeline-middle">
+                        <p
+                            class="text-lg w-12 h-12 bg-accent/40 text-center content-center rounded-full"
+                        >
+                            {startDate.month}/{startDate.day}
+                        </p>
+                    </div>
+                    {#if i != meetings.length - 1}
+                        <hr class="bg-accent" />
+                    {/if}
+                </li>
+            {/each}
+        </ul>
     </div>
     <iframe
         class="m-auto w-full rounded-2xl h-[80vh] mb-10"

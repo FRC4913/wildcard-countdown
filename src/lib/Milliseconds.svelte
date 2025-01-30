@@ -8,7 +8,7 @@
     onMount(() => {
         const interval = setInterval(() => {
             if (running) {
-                milliseconds = 1000 - new Date().getMilliseconds();
+                milliseconds = 999 - new Date().getMilliseconds();
             } else {
                 milliseconds = 0;
             }

@@ -1,26 +1,27 @@
 {
-  "name": "robotics-meetings-svelte",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json"
-  },
-  "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^5.0.3",
-    "@tsconfig/svelte": "^5.0.4",
-    "svelte": "^5.15.0",
-    "svelte-check": "^4.1.1",
-    "typescript": "~5.6.2",
-    "vite": "^6.0.5"
-  },
-  "dependencies": {
-    "@tailwindcss/vite": "^4.0.1",
-    "daisyui": "^5.0.0-beta.4",
-    "ical.js": "^2.1.0",
-    "tailwindcss": "^4.0.1"
-  }
+    "name": "robotics-meetings-svelte",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview",
+        "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json",
+        "fetch-calendar": "curl https://calendar.google.com/calendar/ical/c_d52fc7f555e876b4db1ee7f0f4c658b6b3d03077e08abee2fcb539ff41ba8298%40group.calendar.google.com/public/basic.ics > src/assets/basic.ics"
+    },
+    "devDependencies": {
+        "@sveltejs/vite-plugin-svelte": "^5.0.3",
+        "@tsconfig/svelte": "^5.0.4",
+        "svelte": "^5.15.0",
+        "svelte-check": "^4.1.1",
+        "typescript": "~5.6.2",
+        "vite": "^6.0.5"
+    },
+    "dependencies": {
+        "@tailwindcss/vite": "^4.0.1",
+        "daisyui": "^5.0.0-beta.4",
+        "ical.js": "^2.1.0",
+        "tailwindcss": "^4.0.1"
+    }
 }
