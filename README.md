@@ -45,11 +45,11 @@
     ```
 2. Install NPM packages
     ```sh
-    bun install
+    npm install
     ```
 3. Run dev server
     ```sh
-    bun run dev
+    npm run dev
     ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
