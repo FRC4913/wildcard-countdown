@@ -32,7 +32,8 @@
                 endDate: event.endDate,
                 event,
             };
-        });
+        })
+        .toSorted((a, b) => a.startDate.compare(b.startDate));
 
     let now = $state(ICAL.Time.fromJSDate(new Date(), true));
 
@@ -62,17 +63,15 @@
     );
 
     const nextMeeting = $derived(
-        meetings
-            .toSorted((a, b) => a.startDate.compare(b.startDate))
-            .find((meeting) => {
-                if (
-                    meeting.endDate.compare(now) == 1 ||
-                    meeting.endDate.compare(now) == 0
-                ) {
-                    return true;
-                }
-                return false;
-            })
+        meetings.find((meeting) => {
+            if (
+                meeting.endDate.compare(now) == 1 ||
+                meeting.endDate.compare(now) == 0
+            ) {
+                return true;
+            }
+            return false;
+        })
     );
 
     const meetingSecondsLeft = $derived(
@@ -94,11 +93,13 @@
 
     onMount(() => {
         const x = document
-            .getElementById(nextMeeting?.event.uid ?? "")
+            .getElementById(nextMeeting?.startDate.toString())
             ?.getBoundingClientRect().left;
+        console.log(nextMeeting?.startDate.toJSDate().toLocaleDateString());
         console.log(nextMeeting?.event.uid);
         if (x) {
             const meetingTimeline = document.getElementById("meetingTimeline")!;
+            console.log(document.getElementById(nextMeeting?.event.uid ?? ""));
             meetingTimeline.scrollTo(
                 x - meetingTimeline.getBoundingClientRect().left - 20,
                 0
@@ -230,28 +231,60 @@
             class="timeline place-self-stretch mx-10 overflow-x-scroll p-5 bg-accent/20 text-neutral-content fill-neutral-content rounded-2xl overflow-y-clip"
             id="meetingTimeline"
         >
-            {#each meetings.toSorted( (a, b) => a.startDate.compare(b.startDate) ) as { startDate, endDate, event }, i}
-                <li id={event.uid} class="-mb-20">
+            {#each meetings as { startDate, endDate, event }, i}
+                <li
+                    id={startDate.toString()}
+                    class="-mb-20"
+                    title={event.description}
+                >
                     {#if i != 0}
-                        <hr class="bg-accent" />
+                        <hr
+                            class={startDate.compare(now) == 1
+                                ? ""
+                                : "bg-accent"}
+                        />
                     {/if}
                     <div
                         class={"timeline-box timeline-start bg-accent/30 border-accent/40 max-w-32 text-center"}
                     >
                         {event.summary}
                     </div>
-                    <div class="timeline-middle">
+                    <div class="timeline-middle relative flex size-12">
+                        {#if currentMeeting?.startDate == startDate}
+                            <div
+                                class="w-12 h-12 bg-accent/40 rounded-full animate-ping absolute inline-flex"
+                            ></div>
+                        {/if}
                         <p
-                            class="text-lg w-12 h-12 bg-accent/40 text-center content-center rounded-full"
+                            class="text-lg size-12 bg-accent/40 text-center content-center rounded-full relative"
                         >
                             {startDate.month}/{startDate.day}
                         </p>
                     </div>
                     {#if i != meetings.length - 1}
-                        <hr class="bg-accent" />
+                        <hr
+                            class={endDate.compare(now) == 1 ? "" : "bg-accent"}
+                        />
+                    {:else}
+                        <hr class="bg-amber-300" />
                     {/if}
                 </li>
             {/each}
+            <li class="-mb-20">
+                <hr class="bg-amber-300" />
+                <div
+                    class={"font-bold timeline-box timeline-start bg-amber-300/30 border-amber-300/40 max-w-32 text-center"}
+                >
+                    WILDCARD!
+                </div>
+                <div class="timeline-middle">
+                    <p
+                        class="font-bold text-lg w-12 h-12 bg-amber-300/40 text-center content-center rounded-full"
+                    >
+                        2/23
+                    </p>
+                </div>
+            </li>
         </ul>
     </div>
     <iframe
